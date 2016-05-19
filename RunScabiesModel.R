@@ -3,7 +3,7 @@ library(FME)
 source("parameters.R")
 source("SIS_gale.R")
 
-PopulationFrancaise=60*10^6
+Population=60*10^6
 
 starttime=1
 maxtime=341
@@ -41,7 +41,7 @@ fitMLE <-function(pars, model, Incid.O){
 scabiesCost <-function(p, updateParam=NULL, init){
   model=scabiesSEITS
   newparam<-BaseParameters
-  #print(init)
+  print(init)
   #updateparam contains the parameter that you want to update in the default parameters set
   if(!is.null(updateParam)) newparam[names(updateParam)]=updateParam
   newparam[names(p)]=p
@@ -57,8 +57,7 @@ scabies <- function(updateParam){
   newparam<-BaseParameters
   if(!is.null(updateParam)) newparam[names(updateParam)]=updateParam
   #newparam = pars
-  newinit<-myinit
-  out <- as.data.frame(lsoda(y = newinit, times = times, func = model, parms = newparam))
+  out <- as.data.frame(lsoda(y = init, times = times, func = model, parms = newparam))
   return(out)
 }
 
@@ -91,13 +90,7 @@ calibrateBeta <- function(updateParam=NULL) {
   ##
   # the initial number of infected that we want
   I0=mean(c(SmIncid.O[starttraintime],SmIncid.T[starttraintime]))
-  myinit = c(S=Population-I0, 
-             Eu = 0, 
-             Ec = 0, 
-             I=I0,
-             T1d = 0,
-             T2d = 0,
-             rI = 0)
+  myinit = init
   #the updated parameter list with or without a
   pars=c(beta=1.5)
   

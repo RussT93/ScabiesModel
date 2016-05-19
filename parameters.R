@@ -5,20 +5,17 @@
 
 BaseParameters = list(
   beta=1.535567,
-  a = 0.5,
-  b = 1/2,#1/14,
-  d = 1/2, #1/20,
+  b = 1/4,#1/14,
+  d = 1/20, #1/20,
   e = 0.532, #TBC
-  f = 1,
-  g = 0.395,#Proportion of cases receiving
-  h = 0.395,
-  i = 1,#1/7,
-  j = 0.3,
-  k = 7/4,
-  eff1=0.3, 
-  eff2=0.95,
+  f = 1/7,
+  g = 0.395,#Proportion of cases receiving 2 courses of treatment
+  h = 1/7,
+  efficacy1d=0.3, 
+  efficacy2d=0.95,
   lag=31, 
-  seasonal_forcing=0.20
+  seasonal_forcing=0.20, 
+  householdsize=3
 )
 parametersLaw = list(
   a = 0,
@@ -32,10 +29,11 @@ parametersLaw = list(
   j = 0
 )
 
-init= list(
+#TODO check
+init= c(
   S=5.995653e+07, 
-  Eu=1.812642e+03, 
-  Ec=1.812642e+03, 
+  P=3*1.400602e+03,
+  E=3625.284, 
   I=1.366546e+03, 
   T1d=1.400602e+03, 
   T2d=5.655500e+02, 
