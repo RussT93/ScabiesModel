@@ -3,6 +3,7 @@ library(FME)
 source("parameters.R")
 source("SIS_gale.R")
 
+#test comment russell
 
 Population=60*10^6
 starttime=1
