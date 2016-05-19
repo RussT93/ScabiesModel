@@ -3,7 +3,8 @@ library(FME)
 source("parameters.R")
 source("SIS_gale.R")
 
-Population=60*10^6
+Population_de_la_france=60*10^6
+
 starttime=1
 maxtime=341
 starttraintime=10
