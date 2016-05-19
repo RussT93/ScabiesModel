@@ -3,14 +3,11 @@ library(FME)
 source("parameters.R")
 source("SIS_gale.R")
 
-#test comment russell
-
 Population=60*10^6
 starttime=1
 maxtime=341
 starttraintime=10
 maxtraintime=250
-#times <- seq(1, 200, by = 1)
 times <- seq(starttraintime, maxtraintime, by = 1)
 
 timeSeries<-read.table("Donnees_GALE_July122013.csv",header=TRUE,sep=",")
