@@ -1,6 +1,3 @@
-library(deSolve)
-library(FME)
-source("parameters.R")
 source("SIS_gale.R")
 
 Population=60*10^6
@@ -18,7 +15,8 @@ timeSeries<-read.table("Donnees_GALE_July122013.csv",header=TRUE,sep=",")
 Incid.O=as.ts(timeSeries$Cases.O[starttime:maxtime])
 Incid.T=as.ts(timeSeries$Cases.T[starttime:maxtime])
 
-ma <- function(x,n=5){filter(x,rep(1/n,n), sides=2)}
+ma <- function(x,n=5)
+{filter(x,rep(1/n,n), sides=2)}
 SmIncid.O=ma(Incid.O,n=9)
 SmIncid.T=ma(Incid.T,n=9)
 #newinit<-c(S=1-Incid.O[1], I=Incid.O[1])
@@ -26,13 +24,13 @@ SmIncid.T=ma(Incid.T,n=9)
 matplot(times, (SmIncid.T[starttraintime:maxtraintime]+SmIncid.O[starttraintime:maxtraintime])/2, 
         type = "l", xlab = "semaines", ylab = "Nombre de cas de gale par semaine", 
         main = "Evolution du nombre de cas de gale par semaine en France (2007-2012)", 
-        lwd = 1, lty = 1, bty = "l", col = 2:4)
+        lwd = 1, lty = 1, bty = "l", col = 2)
 #legend("topleft", c("Infected (model)", "Infected (Oral)", "Infected (Topical)"), pch = 1, col = 1:3)
 
 fitMLE <-function(pars, model, Incid.O){
   newparam<-c(BaseParameters, pars)
   newinit<-myinit
-  out <- as.data.frame(lsoda(y = newinit, times = times, func = model, parms = newparam))
+  out <- as.data.frame(lsoda(y = init, times = times, func = scabiesSEITS, parms = BaseParameters))
   res<-sum(dnorm(x=Incid.O[starttraintime:maxtraintime],mean=out$I,log=TRUE))
   return(-res)
 }
