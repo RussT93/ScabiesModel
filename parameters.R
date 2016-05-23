@@ -5,17 +5,17 @@
 
 BaseParameters = list(
   beta=1.535567,
-  b = 1/4,#1/14,
-  d = 1/20, #1/20,
-  e = 0.532, #TBC
-  f = 1/7,
+  b = 1/4,#1/4 days, from rI to T1d,
+  d = 1/20, #1/20,rate of progression from exposed to infectious 10+ mites, ~20 d
+  e = 0.532, #TBC prophylaxis proportion
+  f = 1/7, # time before first treatment, from I to T1d
   g = 0.395,#Proportion of cases receiving 2 courses of treatment
-  h = 1/7,
-  efficacy1d=0.3, 
-  efficacy2d=0.95,
-  lag=31, 
-  seasonal_forcing=0.20, 
-  householdsize=3
+  h = 1/7, # duration of one treatment round
+  efficacy1d=0.3, # efficacy of one course of treatment
+  efficacy2d=0.95, # efficacy of second course of treatment
+  lag=31, # 
+  seasonal_forcing=0.20, # 
+  householdsize=3 # HH of 4, so 3 contacts
 )
 parametersLaw = list(
   a = 0,
