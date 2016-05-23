@@ -4,7 +4,6 @@ source("parameters.R")
 
 scabiesSEITS <- function(time, state, parameters) {
   with(as.list(c(state, parameters)), {
-    #beta_period=(beta)*((1-seasonal_forcing)+seasonal_forcing*(1+sin(2*pi*(time+lag)/52))/2)
     
     # beta infection
     beta_period=beta*((1-seasonal_forcing)+seasonal_forcing*(1+sin(2*pi*(time+lag)/52))/2)
@@ -15,14 +14,17 @@ scabiesSEITS <- function(time, state, parameters) {
     
     # flows from or to S
     fSE =  beta_period * S * (I + rI + T1d) / Population
-    fSP = e * householdsize * fIT1d
+    fSP = e * householdsize * fIT1d *S
     fPS =  (h/2) * P
+    
+    
     fT2dS = efficacy2d * h * T2d
     fT1dS = efficacy1d * (1-g) * h * T1d
     
     ### S 
     dS = -fSE + fT2dS + fT1dS
     
+    # flows to I
     fEI = d*E
     
     ### E
@@ -37,7 +39,7 @@ scabiesSEITS <- function(time, state, parameters) {
     
     ### T
 
-    dT1d = fIT1d - fT1drI - fT1dT2d - fT1dS
+    dT1d = fIT1d - fT1drI - fT1dT2d - fT1dS + frIT1d
     
     fT2drI = (1-efficacy2d) * h * T2d
     dT2d = fT1dT2d - fT2dS - fT2drI
