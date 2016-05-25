@@ -1,16 +1,38 @@
 
 ### Scabies model parameters
 
+
+## General parameters
+Population=60*10^6
+
+starttime=1
+maxtime=341
+starttraintime=10
+maxtraintime=250
+times <- seq(starttraintime, maxtraintime, by = 1)
+
+## Data loading
+timeSeries<-read.table("Donnees_GALE_July122013.csv",header=TRUE,sep=",")
+Incid.O=as.ts(timeSeries$Cases.O[starttime:maxtime])
+Incid.T=as.ts(timeSeries$Cases.T[starttime:maxtime])
+
+ma <- function(x,n=5) {filter(x,rep(1/n,n), sides=2)}
+
+SmIncid.O=ma(Incid.O,n=9)
+SmIncid.T=ma(Incid.T,n=9)
+
+
 ### default
 
-BaseParameters = list(
-  beta=1.535567,
+DefaultParameters = list(
+  beta=0.535567,
   b = 1/4,#1/4 days, from rI to T1d,
   d = 1/20, #1/20,rate of progression from exposed to infectious 10+ mites, ~20 d
-  e = 0.532, #TBC prophylaxis proportion
+  e = 0,#0.532, #TBC prophylaxis proportion
   f = 1/7, # time before first treatment, from I to T1d
   g = 0.395,#Proportion of cases receiving 2 courses of treatment
   h = 1/7, # duration of one treatment round
+  h_proph = 0,#1/7, # duration of one treatment round
   efficacy1d=0.3, # efficacy of one course of treatment
   efficacy2d=0.95, # efficacy of second course of treatment
   lag=31, # 
@@ -29,8 +51,7 @@ parametersLaw = list(
   j = 0
 )
 
-#TODO check
-init= c(
+DefaultInit=c(
   S=5.995653e+07, 
   P=3*1.400602e+03,
   E=3625.284, 

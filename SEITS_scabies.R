@@ -2,6 +2,19 @@ library(deSolve)
 library(FME)
 source("parameters.R")
 
+
+scabies <- function(updateParam=NULL, init=NULL, time=times){
+  newparam<-DefaultParameters
+  if(!is.null(updateParam)) newparam[names(updateParam)]=updateParam
+  if(is.null(init)) {
+    init=DefaultInit
+  }
+  #newparam = pars
+  out <- as.data.frame(lsoda(y = init, times = time, func = scabiesSEITS, parms = newparam))
+  return(out)
+}
+
+
 scabiesSEITS <- function(time, state, parameters) {
   with(as.list(c(state, parameters)), {
     
@@ -14,15 +27,18 @@ scabiesSEITS <- function(time, state, parameters) {
     
     # flows from or to S
     fSE =  beta_period * S * (I + rI + T1d) / Population
-    fSP = e * householdsize * fIT1d *S
-    fPS =  (h/2) * P
-    
+    fSP = min(e * householdsize * fIT1d, S) 
+    fPS =  (h_proph/2) * P
+#     cat("h:",h," P:",P, " fIT1d:",fIT1d, " S:",S, "\n")
+#     cat("time:",time," fSP: ",fSP, " fPS:",fPS,"\n")
+#     cat("Pop:", S+E+I+T1d+T2d+rI+P, "\n")
+#     Sys.sleep(0.3)
     
     fT2dS = efficacy2d * h * T2d
     fT1dS = efficacy1d * (1-g) * h * T1d
     
     ### S 
-    dS = -fSE + fT2dS + fT1dS
+    dS = -fSE + fT2dS + fT1dS -fSP + fPS
     
     # flows to I
     fEI = d*E
@@ -38,7 +54,6 @@ scabiesSEITS <- function(time, state, parameters) {
     fT1dT2d = g * h * T1d
     
     ### T
-
     dT1d = fIT1d - fT1drI - fT1dT2d - fT1dS + frIT1d
     
     fT2drI = (1-efficacy2d) * h * T2d
@@ -50,6 +65,6 @@ scabiesSEITS <- function(time, state, parameters) {
     ### P (for prophylaxis)
     dP = fSP - fPS
     
-    return(list(c(dS, dE, dP, dI, dT1d, dT2d, drI)))
+    return(list(c(dS, dP, dE, dI, dT1d, dT2d, drI), newInf=fSE))
   })
 }

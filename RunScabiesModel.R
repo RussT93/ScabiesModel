@@ -1,24 +1,8 @@
 source("SIS_gale.R")
 
-Population=60*10^6
 
 
-starttime=1
-maxtime=341
-starttraintime=10
-maxtraintime=250
-times <- seq(starttraintime, maxtraintime, by = 1)
 
-timeSeries<-read.table("Donnees_GALE_July122013.csv",header=TRUE,sep=",")
-#Incid.O=(timeSeries$Cases.O)/Population
-#Incid.O=(timeSeries$Cases.O[1:200])
-Incid.O=as.ts(timeSeries$Cases.O[starttime:maxtime])
-Incid.T=as.ts(timeSeries$Cases.T[starttime:maxtime])
-
-ma <- function(x,n=5)
-{filter(x,rep(1/n,n), sides=2)}
-SmIncid.O=ma(Incid.O,n=9)
-SmIncid.T=ma(Incid.T,n=9)
 #newinit<-c(S=1-Incid.O[1], I=Incid.O[1])
 
 matplot(times, (SmIncid.T[starttraintime:maxtraintime]+SmIncid.O[starttraintime:maxtraintime])/2, 
@@ -27,40 +11,8 @@ matplot(times, (SmIncid.T[starttraintime:maxtraintime]+SmIncid.O[starttraintime:
         lwd = 1, lty = 1, bty = "l", col = 2)
 #legend("topleft", c("Infected (model)", "Infected (Oral)", "Infected (Topical)"), pch = 1, col = 1:3)
 
-fitMLE <-function(pars, model, Incid.O){
-  newparam<-c(BaseParameters, pars)
-  newinit<-myinit
-  out <- as.data.frame(lsoda(y = init, times = times, func = scabiesSEITS, parms = BaseParameters))
-  res<-sum(dnorm(x=Incid.O[starttraintime:maxtraintime],mean=out$I,log=TRUE))
-  return(-res)
-}
 
-#
-# Run the model with an updated parameter list (optional) and output the cost (difference with observed)
-scabiesCost <-function(p, updateParam=NULL, init){
-  model=scabiesSEITS
-  newparam<-BaseParameters
-  print(init)
-  #updateparam contains the parameter that you want to update in the default parameters set
-  if(!is.null(updateParam)) newparam[names(updateParam)]=updateParam
-  newparam[names(p)]=p
-  
-  out <- as.data.frame(lsoda(y = init, times = times, func = model, parms = newparam))
-  data=cbind(time=times,SmIncid.O[starttraintime:maxtraintime])
-  cost=modCost(model=cbind(time=times,out$I), obs=data)
-  return(cost)
-}
-
-scabies <- function(updateParam){
-  model=scabiesSEITS
-  newparam<-BaseParameters
-  if(!is.null(updateParam)) newparam[names(updateParam)]=updateParam
-  #newparam = pars
-  out <- as.data.frame(lsoda(y = init, times = times, func = model, parms = newparam))
-  return(out)
-}
-
-
+scabies()
 
 
 # SFun = sensFun(func=scabiesCost,pars)
@@ -80,38 +32,6 @@ scabies <- function(updateParam){
 
 #plot(Fit)
 
-
-calibrateBeta <- function(updateParam=NULL) {
-  if(!is.null(updateParam)) updateParam=c(a=updateParam)
-  print(updateParam)
-  ##
-  ## First find the right initial state
-  ##
-  # the initial number of infected that we want
-  I0=mean(c(SmIncid.O[starttraintime],SmIncid.T[starttraintime]))
-  myinit = init
-  #the updated parameter list with or without a
-  pars=c(beta=1.5)
-  
-  ## calibrate with initial seeding
-  Fit = modFit(scabiesCost, p=pars, updateParam=updateParam, init=myinit, lower=c(1), upper=c(3), method="L-BFGS-B", control=list(trace=5))
-  print(coef(Fit))
-  
-  # run again the model with the new parameter set
-  newparam=BaseParameters
-  if(!is.null(updateParam)) newparam[names(updateParam)]=updateParam
-  newparam[names(coef(Fit))]=coef(Fit)
-  outInit <- as.data.frame(lsoda(y = myinit, times = times, func = scabiesSEITS, parms = newparam))
-  ## find state corresponding to the initial number of infected
-  index_state=which.min((outInit$I[2:maxtraintime]-I0)^2)+1
-  myinit2=as.numeric(outInit[index_state,2:8])
-  names(myinit2)=names(myinit)
-  myinit=myinit2
-  ## recalibrate with the right initial state
-  Fit = modFit(scabiesCost, p=pars,updateParam, init=myinit, lower=c(1), upper=c(3), method="BFGS", control=list(trace=5))
-  print(coef(Fit))
-  return(c(coef(Fit),myinit))
-}
 
 
 
