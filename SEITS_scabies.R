@@ -3,14 +3,17 @@ library(FME)
 source("parameters.R")
 
 
-scabies <- function(updateParam=NULL, init=NULL, time=times){
+scabies <- function(updateParam=NULL, init=NULL, time=times, doPlot=F){
   newparam<-DefaultParameters
   if(!is.null(updateParam)) newparam[names(updateParam)]=updateParam
   if(is.null(init)) {
     init=DefaultInit
   }
+  print(newparam)
   #newparam = pars
   out <- as.data.frame(lsoda(y = init, times = time, func = scabiesSEITS, parms = newparam))
+  if(doPlot) matplot(cbind(SmIncid.O[starttraintime:maxtraintime],out$newInf), type="l",xlab = "semaines", ylab = "Nombre de cas de gale par semaine", 
+                     main = "Evolution du nombre de cas de gale\n par semaine en France (2007-2012)")
   return(out)
 }
 

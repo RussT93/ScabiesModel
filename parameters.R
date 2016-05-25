@@ -25,19 +25,19 @@ SmIncid.T=ma(Incid.T,n=9)
 ### default
 
 DefaultParameters = list(
-  beta=0.535567,
+  beta=0.06643618,
   b = 1/4,#1/4 days, from rI to T1d,
   d = 1/20, #1/20,rate of progression from exposed to infectious 10+ mites, ~20 d
-  e = 0,#0.532, #TBC prophylaxis proportion
+  e = 0.532, #TBC prophylaxis proportion
   f = 1/7, # time before first treatment, from I to T1d
   g = 0.395,#Proportion of cases receiving 2 courses of treatment
   h = 1/7, # duration of one treatment round
-  h_proph = 0,#1/7, # duration of one treatment round
+  h_proph = 1/7, # duration of one treatment round
   efficacy1d=0.3, # efficacy of one course of treatment
   efficacy2d=0.95, # efficacy of second course of treatment
-  lag=31, # 
-  seasonal_forcing=0.20, # 
-  householdsize=3 # HH of 4, so 3 contacts
+  lag=16, # 
+  seasonal_forcing=0.39810316, # 
+  householdsize=2.57001460 # HH of 4, so 3 contacts
 )
 parametersLaw = list(
   a = 0,
@@ -52,11 +52,20 @@ parametersLaw = list(
 )
 
 DefaultInit=c(
-  S=5.995653e+07, 
-  P=3*1.400602e+03,
-  E=3625.284, 
-  I=1.366546e+03, 
-  T1d=1.400602e+03, 
-  T2d=5.655500e+02, 
-  rI=1.290141e+03
+  S=59961355, 
+  P=2819.153,
+  E=23567.07, 
+  I=5982.764, 
+  T1d=13180.91, 
+  T2d=4883.224, 
+  rI=3211.403
 )
+# DefaultInit=c(
+#   S=5.995653e+07, 
+#   P=3*1.400602e+03,
+#   E=3625.284, 
+#   I=1.366546e+03, 
+#   T1d=1.400602e+03, 
+#   T2d=5.655500e+02, 
+#   rI=1.290141e+03
+# )

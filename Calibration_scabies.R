@@ -12,24 +12,27 @@ fitMLE <-function(pars, model, Incid.O){
 #
 # Run the model with an updated parameter list (optional) and output the cost (difference with observed)
 scabiesCost <-function(p, updateParam=NULL, init){
+  doPlot=T
   newparam<-DefaultParameters
   #print(init)
   #updateparam contains the parameter that you want to update in the default parameters set
   if(!is.null(updateParam)) newparam[names(updateParam)]=updateParam
   newparam[names(p)]=p
+  
   #print(p)
   #print(newparam)
   out <- as.data.frame(lsoda(y = init, times = times, func = scabiesSEITS, parms = newparam))
-  data=cbind(time=times,SmIncid.O[starttraintime:maxtraintime])
+  data=cbind(time=times,SmIncid.O[times])
   #print(data)
   #print(out$I)
   cost=modCost(model=cbind(time=times,out$newInf), obs=data)
-  #print(cost)
+  if(doPlot) matplot(cbind(SmIncid.O[starttraintime:maxtraintime],out$newInf), type="l")
+  print(cost$model)
   return(cost)
 }
 
 
-calibrateBeta <- function(updateParam=NULL) {
+calibrateBeta <- function(pars=NULL, lp=NULL, up=NULL, updateParam=NULL) {
   if(!is.null(updateParam)) updateParam=c(a=updateParam)
   print(updateParam)
   ##
@@ -39,9 +42,15 @@ calibrateBeta <- function(updateParam=NULL) {
   I0=mean(c(SmIncid.O[starttraintime],SmIncid.T[starttraintime]))
 
   #the updated parameter list with or without a
-  pars=c(beta=0.1, seasonal_forcing=0.5)
-  lp=pars*0
-  up=c(beta=10, seasonal_forcing=1)
+  if(is.null(pars)){
+    pars=c(beta=0.1, seasonal_forcing=0.5)
+    lp=pars*0
+    up=c(beta=10, seasonal_forcing=1)  
+  }else{
+    if(is.null(lp)) lp=pars*0
+    if(is.null(up)) up=pars*1.5
+  }
+  
   
   ## calibrate with initial seeding
   print("First calibration run with default init values")

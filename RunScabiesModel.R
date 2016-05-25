@@ -12,7 +12,7 @@ matplot(times, (SmIncid.T[starttraintime:maxtraintime]+SmIncid.O[starttraintime:
 #legend("topleft", c("Infected (model)", "Infected (Oral)", "Infected (Topical)"), pch = 1, col = 1:3)
 
 
-scabies()
+scabies(doPlot=T)
 
 
 # SFun = sensFun(func=scabiesCost,pars)
