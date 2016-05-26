@@ -1,4 +1,4 @@
-source("SIS_gale.R")
+source("SEITS_scabies.R")
 
 
 
