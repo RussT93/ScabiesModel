@@ -14,10 +14,16 @@ source("SEITS_scabies.R")
 
 shinyServer(function(input, output, session) {
   startyear=2007
+  
   result<-reactive({
     
     newParam=DefaultParameters
+    
+    newParam$e=input$e
+    newParam$g=input$g
     newParam$efficacy1d=input$efficacy1d
+    newParam$efficacy2d=input$efficacy2d
+  
     
     result=scabies(updateParam = newParam)
     result$time=as.Date((strptime(paste0(startyear+floor((result$time*7)/365),"/",(result$time*7)%%365),"%Y/%j")))+newParam$lag

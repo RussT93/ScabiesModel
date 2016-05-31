@@ -14,12 +14,18 @@ shinyUI(fluidPage(
   fluidRow(
     # Sidebar with a slider input for number of bins
     column(4, tabsetPanel(
-      tabPanel("Epidemiology",wellPanel(
-        sliderInput("a nice variable",
-                    "myvar",
-                    min = 1,
-                    max = 2,
-                    value = 1.6, animate=animationOptions(interval=2000), step=0.1)
+      tabPanel("Medical Recommendations",wellPanel(
+        sliderInput("g",
+                    "Proportion of cases well treated (Tw) : Tw = 2 rounds",
+                    min = 0,
+                    max =1,
+                    value =  0.395, animate=T),
+     
+        sliderInput("e",
+                    "Proportion of contact individuals treated with prophylaxis",
+                    min = 0,
+                    max =1,
+                    value =  0.532, animate=T)
       )),
 
       tabPanel("Treatment",wellPanel(
@@ -27,7 +33,12 @@ shinyUI(fluidPage(
                     "Efficacy of one round of treatment",
                     min = 0,
                     max = 0.5,
-                    value = 0.3, animate=T)
+                    value = 0.3, animate=T),
+        sliderInput("efficacy2d",
+                    "Efficacy of the second round of treatment",
+                    min = 0,
+                    max = 1,
+                    value = 0.95, animate=T)
       )))),
     # Show a plot of the generated distribution
     column(8,tabsetPanel(
@@ -45,7 +56,7 @@ shinyUI(fluidPage(
                           #tableOutput('table')
                  )
                )
-      )
+          )
       )
     )
     )
