@@ -35,25 +35,17 @@ DefaultParameters = list(
   h_proph = 1/7, # duration of one treatment round
   efficacy1d=0.3, # efficacy of one course of treatment
   efficacy2d=0.95, # efficacy of second course of treatment
+  efficacyProphylaxis=1,
+  RRclose_constat=5,
   lag=16, # 
   seasonal_forcing=0.39810316, # 
   householdsize=2.57001460 # HH of 4, so 3 contacts
 )
-parametersLaw = list(
-  a = 0,
-  b = 0,
-  d = 0,
-  e = 0,
-  f = 0,
-  g = 0,
-  h = 0,
-  i = 0,
-  j = 0
-)
+
 
 DefaultInit=c(
   S=59961355, 
-  P=2819.153,
+  CC=2819.153,
   E=23567.07, 
   I=5982.764, 
   T1d=13180.91, 

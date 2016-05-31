@@ -31,10 +31,14 @@ scabiesSEITS <- function(time, state, parameters) {
     # flow from I to T1d
     fIT1d = f * I
     
+    maxfCCE=min(RRclose_constat * beta_period * CC * (I + rI + T1d) / Population, CC)
+    #reduction of infection in treated + proportion of infected not treated
+    redfCCE= (1-e) * (1 - efficacyProphylaxis) * maxfCCE + e * maxfCCE
     # flows from or to S
-    fSE =  beta_period * S * (I + rI + T1d) / Population
-    fSP = min(e * householdsize * fIT1d, S) 
-    fPS =  (h_proph/2) * P
+    #total number of Susceptible infected without the contact
+    fSE =  min(beta_period * (S + CC) * (I + rI + T1d) / Population - maxfCCE,S)
+    fSCC = min(householdsize * fIT1d, S) 
+    fCCS =  (h_proph) * CC
 #     cat("h:",h," P:",P, " fIT1d:",fIT1d, " S:",S, "\n")
 #     cat("time:",time," fSP: ",fSP, " fPS:",fPS,"\n")
 #     cat("Pop:", S+E+I+T1d+T2d+rI+P, "\n")
@@ -44,13 +48,13 @@ scabiesSEITS <- function(time, state, parameters) {
     fT1dS = efficacy1d * (1-g) * h * T1d
     
     ### S 
-    dS = -fSE + fT2dS + fT1dS -fSP + fPS
+    dS = -fSE + fT2dS + fT1dS -fSCC + fCCS
     
     # flows to I
     fEI = d*E
     
     ### E
-    dE = + fSE - fEI
+    dE = + fSE - fEI + redfCCE
     
     ### I
     dI = fEI - fIT1d
@@ -69,8 +73,8 @@ scabiesSEITS <- function(time, state, parameters) {
     drI = fT1drI + fT2drI - frIT1d
     
     ### P (for prophylaxis)
-    dP = fSP - fPS
+    dCC = fSCC - fCCS - redfCCE
     
-    return(list(c(dS, dP, dE, dI, dT1d, dT2d, drI), newInf=fSE))
+    return(list(c(dS, dCC, dE, dI, dT1d, dT2d, drI), newInf=fSE+redfCCE))
   })
 }
