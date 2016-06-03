@@ -26,7 +26,7 @@ shinyUI(fluidPage(
                     min = 0,
                     max =1,
                     value =  0.532, animate=T)
-      )),
+      )), 
 
       tabPanel("Treatment",wellPanel(
         sliderInput("efficacy1d",

@@ -12,7 +12,7 @@ maxtraintime=250
 times <- seq(starttraintime, maxtraintime, by = 1)
 
 ## Data loading
-timeSeries<-read.table("Donnees_GALE_July122013.csv",header=TRUE,sep=",")
+timeSeries<-read.table("Donnees_GALE_July122013final.csv",header=TRUE,sep=";")
 Incid.O=as.ts(timeSeries$Cases.O[starttime:maxtime])
 Incid.T=as.ts(timeSeries$Cases.T[starttime:maxtime])
 
